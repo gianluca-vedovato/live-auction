@@ -1,12 +1,28 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <Navigation />
+    <div class="container py-6">
+      <transition name="fade">
+        <router-view />
+      </transition>
     </div>
-    <router-view/>
+    <!-- <div @click="signout">logout</div> -->
   </div>
 </template>
+
+<script>
+import { mapActions } from 'vuex'
+import Navigation from '@/components/Navigation'
+
+export default {
+  components: {
+    Navigation
+  },
+  methods: {
+    ...mapActions('auth', { signout: 'signout' })
+  }
+}
+</script>
 
 <style lang="scss">
 #app {
@@ -28,5 +44,28 @@
       color: #42b983;
     }
   }
+}
+
+.fullscreen {
+  height: 100vh;
+  width: 100vw;
+  background-color: #fff;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  padding: 2rem 1rem;
+  box-shadow: 0px -4px 0 10px rgba(0, 0, 0, .2);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.fade-enter,
+.fade-leave {
+  transform: scale(1.2);
+  opacity: 0;
 }
 </style>
