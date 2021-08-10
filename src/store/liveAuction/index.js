@@ -66,16 +66,16 @@ export default ({
         currentUser: uid,
         edited
       }
-      
+
       const startTimer = await firebase
-      .app()
-      .functions('europe-west1')
-      .httpsCallable('startTimer')
+        .app()
+        .functions('europe-west1')
+        .httpsCallable('startTimer')
       startTimer({
         edited: 0,
         currentValue: value
       })
-      
+
       return database
         .collection('liveAuction')
         .doc(state.id)
