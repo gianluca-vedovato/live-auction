@@ -30,11 +30,6 @@ export default ({
         .collection('liveAuction')
         .get()
 
-      // no space found
-      admin.database().ref('/messages').push({
-        text: sanitizedMessage,
-        author: { uid, name, picture, email },
-      })
       if (!snapshot.docs[0]) return
       commit('setId', snapshot.docs[0].id)
       await firebase.functions().httpsCallable('startTimer', {
