@@ -24,14 +24,20 @@ const waitForCountdown = (edited: number) => {
     : edited < 5
       ? 4500
       : 2500
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(resolve, delay)
   })
 }
 
 const countdown = (countdown: number) => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(() => resolve(countdown++), 1050)
+  })
+}
+
+const timer = (delay: number) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay)
   })
 }
 
@@ -89,6 +95,7 @@ exports.startTimer = functions
       end: true
     }, { merge: true })
 
+    await timer(2500)
     return ref.set({
       isLive: false
     })

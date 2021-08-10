@@ -23,11 +23,6 @@
           +10
         </MainButton>
       </div>
-      <div class="flex justify-center my-5">
-        <MainButton type="secondary" :status="isMyOffer || this.end ? 'disabled' : 'active'">
-          Passo
-        </MainButton>
-      </div>
     </div>
   </div>
 </template>
