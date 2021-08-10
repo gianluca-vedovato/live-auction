@@ -53,6 +53,7 @@ export default {
       currentPlayer: 'currentPlayer',
       currentValue: 'currentValue',
       currentUser: 'currentUser',
+      lastEdited: 'lastEdited',
       edited: 'edited'
     }),
     ...mapGetters('auth', { uid: 'uid', userById: 'userById' }),
@@ -82,16 +83,12 @@ export default {
     }
   },
   watch: {
-    currentValue: {
+    lastEdited: {
       handler (v) {
-        if (this.timeout) {
-          clearTimeout(this.timeout)
-        }
-        this.stopTimer()
-        this.timeout = setTimeout(() => {
-          this.startTimer()
-        }, this.timer)
-      }
+        console.log(v, v.toDate())
+        console.log(new Date())
+      },
+      immediate: true
     }
   },
   methods: {

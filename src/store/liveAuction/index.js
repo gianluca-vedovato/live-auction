@@ -12,6 +12,7 @@ export default ({
     currentPlayer: (state) => state.auction.currentPlayer,
     currentValue: (state) => state.auction.currentValue,
     currentUser: (state) => state.auction.currentUser,
+    lastEdited: (state) => state.auction.lastEdited,
     edited: (state) => state.auction.edited
   },
   mutations: {

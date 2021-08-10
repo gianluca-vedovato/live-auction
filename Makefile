@@ -1,6 +1,7 @@
 deploy:
 	npm version patch; \
-	git commit -m "new patch"; \
+	git add .; \
+	git commit -m "new patch" --no-verify; \
 	git push; \
 	npm run build; \
 	cd functions; \
