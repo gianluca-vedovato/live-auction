@@ -85,7 +85,7 @@ export default {
   watch: {
     countdown: {
       handler (c) {
-        if (c < 4 || !isMyOffer) return
+        if (c < 4 || !this.isMyOffer) return
         this.addPlayer({ uid: this.uid, player: this.currentPlayer, value: this.currentValue })
       }
     }
