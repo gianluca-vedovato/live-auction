@@ -14,6 +14,9 @@
             </MainButton>
           </button>
         </form>
+        <div v-if="error" class="text-red-500 text-xs mt-4">
+          {{ error }}
+        </div>
         <div class="mt-10 font-gray-400 text-s">
           Sei già registrato? <router-link class="font-bold underline" :to="{ name: 'Login' }">Login</router-link>
         </div>
@@ -37,7 +40,8 @@ export default {
   data: () => ({
     email: '',
     password: '',
-    signedUp: false
+    signedUp: false,
+    error: undefined
   }),
   methods: {
     ...mapActions('auth', { signup: 'signup' }),
@@ -47,6 +51,7 @@ export default {
         this.signedUp = true
       } catch (e) {
         console.error(e)
+        this.error = e
       }
       await this.signup({ email: this.email, password: this.password })
     }
