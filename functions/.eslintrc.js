@@ -28,6 +28,7 @@ module.exports = {
     indent: 'warn',
     'spaced-comment': 'warn',
     'eol-last': 'warn',
-    curly: 'warn'
+    curly: 'warn',
+    'no-void': 'warn'
   }
 }
