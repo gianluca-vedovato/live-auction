@@ -1,16 +1,31 @@
 <template>
   <div class="fullscreen">
-    <div class="absolute top-8 right-8 close cursor-pointer transition-all duration-200 hover:opacity-60" @click="$emit('close')">
+    <div
+      class="absolute top-8 right-8 close cursor-pointer transition-all duration-200 hover:opacity-60" @click="$emit('close')"
+    >
       <span />
       <span />
     </div>
-    <h1 class="text-4xl font-bold">Nuova asta</h1>
-    <form @submit.prevent="startNewAuction" class="flex flex-col items-center mt-10">
-      <label for="role" class="text-blue-600 font-bold text-s">Ruolo</label>
+    <h1 class="text-4xl font-bold">
+      Nuova asta
+    </h1>
+    <form
+      @submit.prevent="startNewAuction"
+      class="flex flex-col items-center mt-10"
+    >
+      <label
+        for="role"
+        class="text-blue-600 font-bold text-s"
+      >
+        Ruolo
+      </label>
       <select name="role" id="role" v-model="role">
         <option :value="role.key" v-for="role of roles" :key="role.key">{{ role.name }}</option>
       </select>
-      <div v-if="role" class="inline-block relative">
+      <div
+        v-if="role"
+        class="inline-block relative"
+      >
         <label for="player" class="block mt-4 text-blue-600 font-bold text-s">Giocatore</label>
         <input type="text" name="player" id="player" v-model="player" class="my-2" placeholder="Ricerca squadra o giocatore" @focus="showSuggestions = true" @blur="handleBlur" autocomplete="off" @input="handleInput">
         <div class="suggestions absolute left-0 bg-white shadow-md z-10 w-full max-h-60 overflow-y-auto" v-if="player && player.length > 0 && showSuggestions">

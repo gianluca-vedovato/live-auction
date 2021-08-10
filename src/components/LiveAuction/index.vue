@@ -8,7 +8,7 @@
       </transition>
       <span class="progress inline-block my-2 h-1 bg-blue-400" :style="{ animationDuration: `${timer / 1000}s` }" :key="edited" v-if="edited > 0 && !end && countdown === 0"></span>
       <transition name="zoom-out" mode="out-in">
-        <div class="timer my-4 text-2xl text-pink-600 font-bold" :key="countdown" v-if="countdown > 0 || end">
+        <div class="timer my-4 text-2xl text-pink-600 font-bold" :key="countdown" v-if="countdown > 0 || end" :class="{ blink: countdown === 3 }">
           {{ countdownMessage }}
         </div>
       </transition>
@@ -156,6 +156,21 @@ export default {
   }
   to {
     width: 100%;
+  }
+}
+
+.blink {
+  animation: blink 0.6s linear infinite both;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.1);
   }
 }
 </style>
