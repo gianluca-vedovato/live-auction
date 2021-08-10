@@ -12,6 +12,9 @@
         </MainButton>
       </button>
     </form>
+    <div v-if="error" class="text-red-500 text-xs mt-4">
+      {{ error }}
+    </div>
     <div class="mt-10 font-gray-400 text-s">
       Non sei registrato? <router-link class="font-bold underline" :to="{ name: 'Signup' }">Registrati</router-link>
     </div>
@@ -28,7 +31,8 @@ export default {
   },
   data: () => ({
     email: '',
-    password: ''
+    password: '',
+    error: undefined
   }),
   computed: {
     ...mapGetters('auth', { user: 'user' })
@@ -41,6 +45,7 @@ export default {
         this.$router.push({ name: 'Home' })
       } catch (e) {
         console.error(e)
+        this.error = e
       }
     }
   }
