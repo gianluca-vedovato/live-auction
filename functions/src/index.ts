@@ -35,6 +35,20 @@ const countdown = (countdown: number) => {
   })
 }
 
+const getSnapshot = () => {
+  return new Promise(resolve => {
+    admin
+      .firestore()
+      .collection('liveAuction')
+      .doc(mainLiveAuctionId)
+      .get()
+      .then((doc) => {
+        const snapshotData = doc.data()
+        return resolve(snapshotData)
+      })
+  })
+}
+
 exports.initTimer = functions
   .region('europe-west1')
   .firestore.document(`/liveAuction/${mainLiveAuctionId}`)
@@ -66,38 +80,62 @@ exports.startTimer = functions.https.onCall(async (data) => {
     .doc(mainLiveAuctionId)
 
   await waitForCountdown(data.edited)
-  const snapshot = await admin
-    .firestore()
-    .collection('liveAuction')
-    .doc(mainLiveAuctionId)
-    .get()
+  let current: any = await getSnapshot()
 
-  if (!snapshot.exists) return false
-  const snapshotData = snapshot.data()
-  if (snapshotData?.currentValue !== data.currentValue) return false
+  if (current?.currentValue !== data.currentValue) return false
   await ref.set({
     countdown: 3
   }, { merge: true })
 
-  while (snapshotData?.countdown !== 0) {
-    const newSnapshot = await admin
-      .firestore()
-      .collection('liveAuction')
-      .doc(mainLiveAuctionId)
-      .get()
+  await countdown(3)
+  current = await getSnapshot()
 
-    if (!newSnapshot.exists) return false
-    const newCountdown = await countdown(data.countdown)
-    const newSnapshotData = newSnapshot.data()
-    if (newSnapshotData?.currentValue !== data.currentValue) return false
-    if (data.countdown === 0) {
-      return ref.set({
-        countdown: newCountdown,
-        end: true
-      }, { merge: true })
-    }
-    return ref.set({
-      countdown: newCountdown
-    }, { merge: true })
-  }
+  if (current?.currentValue !== data.currentValue) return false
+  await ref.set({
+    countdown: 2
+  }, { merge: true })
+
+  await countdown(2)
+  current = await getSnapshot()
+
+  if (current?.currentValue !== data.currentValue) return false
+  await ref.set({
+    countdown: 1
+  }, { merge: true })
+
+  await countdown(1)
+  current = await getSnapshot()
+
+  if (current?.currentValue !== data.currentValue) return false
+  await ref.set({
+    countdown: 0,
+    end: true
+  }, { merge: true })
+  // while (snapshotData?.countdown !== 0) {
+  //   const newSnapshot = await admin
+  //     .firestore()
+  //     .collection('liveAuction')
+  //     .doc(mainLiveAuctionId)
+  //     .get()
+
+  //   if (!newSnapshot.exists) return false
+  //   const newCountdown = await countdown(data.countdown)
+  //   const newSnapshotData = newSnapshot.data()
+  //   const newSnap = await admin
+  //     .firestore()
+  //     .collection('liveAuction')
+  //     .doc(mainLiveAuctionId)
+  //     .get()
+  //   snapshotData = newSnap.data()
+  //   if (newSnapshotData?.currentValue !== data.currentValue) return false
+  //   if (data.countdown === 0) {
+  //     return ref.set({
+  //       countdown: newCountdown,
+  //       end: true
+  //     }, { merge: true })
+  //   }
+  //   return ref.set({
+  //     countdown: newCountdown
+  //   }, { merge: true })
+  // }
 })
