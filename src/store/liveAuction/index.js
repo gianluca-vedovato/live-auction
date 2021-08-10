@@ -1,6 +1,7 @@
 import { database } from '@/plugins/firebase'
 import { firestoreAction } from 'vuexfire'
-import * as firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/functions'
 
 export default ({
   namespaced: true,
@@ -32,10 +33,19 @@ export default ({
 
       if (!snapshot.docs[0]) return
       commit('setId', snapshot.docs[0].id)
-      await firebase.functions().httpsCallable('startTimer', {
+      const f = await firebase
+        .app()
+        .functions('europe-west1')
+        .httpsCallable('startTimer')
+      const a = await f({
         edited: snapshot.docs[0].edited,
         currentValue: snapshot.docs[0].currentValue
       })
+      console.log(a)
+      // await httpsCallable(functions, 'startTimer', {
+      //   edited: snapshot.docs[0].edited,
+      //   currentValue: snapshot.docs[0].currentValue
+      // })
       return bindFirestoreRef('auction', snapshot.docs[0].ref, { wait: true })
     }),
     stopAuction: ({ state }) => {
