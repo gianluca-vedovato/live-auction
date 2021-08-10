@@ -86,7 +86,7 @@ exports.startTimer = functions.https.onCall(async (data) => {
       .doc(mainLiveAuctionId)
       .get()
 
-    if (!newSnapshot.exists) return
+    if (!newSnapshot.exists) return false
     const newCountdown = await countdown(data.countdown)
     const newSnapshotData = newSnapshot.data()
     if (newSnapshotData?.currentValue !== data.currentValue) return false
