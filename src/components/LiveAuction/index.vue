@@ -34,7 +34,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import * as firebase from 'firebase'
+import { Timestamp } from '@/plugins/firebase'
 import MainButton from '@/components/MainButton'
 
 export default {
@@ -84,9 +84,10 @@ export default {
   },
   watch: {
     lastEdited: {
-      handler (v) {
-        console.log(v, v.toDate())
-        console.log(new firebase.Timestamp())
+      handler (lastEdited) {
+        if (!lastEdited) return
+        const now = Timestamp.now()
+        console.log(lastEdited, now)
       },
       immediate: true
     }

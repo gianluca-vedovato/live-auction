@@ -28,3 +28,5 @@ export const auth = new Promise((resolve, reject) => {
     return resolve(user)
   })
 })
+
+export const Timestamp = firebase.firestore.Timestamp
