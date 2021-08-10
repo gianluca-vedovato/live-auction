@@ -24,13 +24,13 @@ const waitForCountdown = (edited: number) => {
     : edited < 5
       ? 4500
       : 2500
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(resolve, delay)
   })
 }
 
 const countdown = (countdown: number) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(countdown--), 1200)
   })
 }
@@ -60,7 +60,7 @@ exports.initTimer = functions
       }, { merge: true })
   })
 
-exports.startTimer = functions.https.onCall(async (data, context) => {
+exports.startTimer = functions.https.onCall(async (data) => {
   const ref: FirebaseFirestore.DocumentReference = await db
     .collection('liveAuction')
     .doc(mainLiveAuctionId)
@@ -72,37 +72,32 @@ exports.startTimer = functions.https.onCall(async (data, context) => {
     .doc(mainLiveAuctionId)
     .get()
 
-  if (!snapshot.exists) return
+  if (!snapshot.exists) return false
   const snapshotData = snapshot.data()
   if (snapshotData?.currentValue !== data.currentValue) return false
-  return ref.set({
+  await ref.set({
     countdown: 3
   }, { merge: true })
-})
 
-exports.startCountdown = functions.https.onCall(async (data, context) => {
-  const ref: FirebaseFirestore.DocumentReference = await db
-    .collection('liveAuction')
-    .doc(mainLiveAuctionId)
+  while (snapshotData?.countdown === 0) {
+    const newSnapshot = await admin
+      .firestore()
+      .collection('liveAuction')
+      .doc(mainLiveAuctionId)
+      .get()
 
-  const newCountdown = await countdown(data.countdown)
-
-  const snapshot = await admin
-    .firestore()
-    .collection('liveAuction')
-    .doc(mainLiveAuctionId)
-    .get()
-
-  if (!snapshot.exists) return
-  const snapshotData = snapshot.data()
-  if (snapshotData?.currentValue !== data.currentValue) return false
-  if (data.countdown === 0) {
+    if (!newSnapshot.exists) return
+    const newCountdown = await countdown(data.countdown)
+    const newSnapshotData = newSnapshot.data()
+    if (newSnapshotData?.currentValue !== data.currentValue) return false
+    if (data.countdown === 0) {
+      return ref.set({
+        countdown: newCountdown,
+        end: true
+      }, { merge: true })
+    }
     return ref.set({
-      countdown: newCountdown,
-      end: true
+      countdown: newCountdown
     }, { merge: true })
   }
-  return ref.set({
-    countdown: newCountdown
-  }, { merge: true })
 })
