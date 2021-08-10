@@ -10,7 +10,7 @@ import * as admin from 'firebase-admin'
 // });
 
 admin.initializeApp()
-const firestore = admin.firestore
+// const firestore = admin.firestore
 // const db = admin.firestore()
 const mainLiveAuctionId = 'IhkbDrILbzkpCaRBGMyq'
 
@@ -26,13 +26,13 @@ exports.initTimer = functions
     const dataBefore: any = change.before.data()
     if (dataAfter.currentValue === dataBefore.currentValue) return
     const edited = dataAfter.edited + 1
-    functions.logger.log('edited', dataAfter.edited, dataBefore.edited, edited)
+    const now: FirebaseFirestore.Timestamp = admin.firestore.Timestamp.now()
 
     return change
       .after
       .ref
       .set({
-        lastEdited: firestore.Timestamp.fromDate(new Date()),
+        lastEdited: now,
         edited
       }, { merge: true })
   })

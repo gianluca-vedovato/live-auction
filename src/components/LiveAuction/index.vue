@@ -34,7 +34,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-
+import * as firebase from 'firebase'
 import MainButton from '@/components/MainButton'
 
 export default {
@@ -86,7 +86,7 @@ export default {
     lastEdited: {
       handler (v) {
         console.log(v, v.toDate())
-        console.log(new Date())
+        console.log(new firebase.Timestamp())
       },
       immediate: true
     }
