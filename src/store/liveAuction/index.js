@@ -15,7 +15,9 @@ export default ({
     currentValue: (state) => state.auction.currentValue,
     currentUser: (state) => state.auction.currentUser,
     lastEdited: (state) => state.auction.lastEdited,
-    edited: (state) => state.auction.edited
+    edited: (state) => state.auction.edited,
+    countdown: (state) => state.auction.countdown,
+    end: (state) => state.auction.end
   },
   mutations: {
     setAuction (state, auction) {
@@ -33,52 +35,47 @@ export default ({
 
       if (!snapshot.docs[0]) return
       commit('setId', snapshot.docs[0].id)
-      const f = await firebase
-        .app()
-        .functions('europe-west1')
-        .httpsCallable('startTimer')
-      const a = await f({
-        edited: snapshot.docs[0].edited,
-        currentValue: snapshot.docs[0].currentValue
-      })
-      console.log(a)
-      // await httpsCallable(functions, 'startTimer', {
-      //   edited: snapshot.docs[0].edited,
-      //   currentValue: snapshot.docs[0].currentValue
-      // })
       return bindFirestoreRef('auction', snapshot.docs[0].ref, { wait: true })
     }),
-    stopAuction: ({ state }) => {
-      const data = {
-        isLive: false,
-        edited: 0
-      }
-      setTimeout(() => {
-        return database
-          .collection('liveAuction')
-          .doc(state.id)
-          .update(data)
-      }, 4000)
-    },
-    startAuction: ({ state }, { player, value, uid }) => {
+    startAuction: async ({ state }, { player, value, uid }) => {
       const data = {
         isLive: true,
         currentPlayer: player,
         currentValue: value,
         currentUser: uid,
-        edited: 1
+        edited: 1,
+        countdown: 0
       }
+      const startTimer = await firebase
+        .app()
+        .functions('europe-west1')
+        .httpsCallable('startTimer')
+
+      startTimer({
+        edited: 0,
+        currentValue: value
+      })
       return database
         .collection('liveAuction')
         .doc(state.id)
         .update(data)
     },
-    offer: ({ state }, { value, uid, edited }) => {
+    offer: async ({ state }, { value, uid, edited }) => {
       const data = {
         currentValue: value,
         currentUser: uid,
         edited
       }
+      
+      const startTimer = await firebase
+      .app()
+      .functions('europe-west1')
+      .httpsCallable('startTimer')
+      startTimer({
+        edited: 0,
+        currentValue: value
+      })
+      
       return database
         .collection('liveAuction')
         .doc(state.id)

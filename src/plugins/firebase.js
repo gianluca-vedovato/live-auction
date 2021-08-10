@@ -1,5 +1,6 @@
 import firebase from 'firebase'
 import 'firebase/firestore'
+import 'firebase/functions'
 import store from '@/store'
 
 const firebaseConfig = {
@@ -14,6 +15,13 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 
 export const database = firebase.firestore()
+
+// if (location.hostname === 'localhost') {
+//   database.settings({
+//     host: 'localhost:8080',
+//     ssl: false
+//   })
+// }
 
 export const auth = new Promise((resolve, reject) => {
   const timeout = setTimeout(reject, 5000)

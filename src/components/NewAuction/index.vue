@@ -1,8 +1,8 @@
 <template>
   <div class="fullscreen">
     <div class="absolute top-8 right-8 close cursor-pointer transition-all duration-200 hover:opacity-60" @click="$emit('close')">
-      <span></span>
-      <span></span>
+      <span />
+      <span />
     </div>
     <h1 class="text-4xl font-bold">Nuova asta</h1>
     <form @submit.prevent="startNewAuction" class="flex flex-col items-center mt-10">

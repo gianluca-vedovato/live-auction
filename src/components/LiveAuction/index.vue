@@ -6,9 +6,9 @@
       <transition name="zoom-out" mode="out-in">
         <p :key="currentValue">Prezzo offerto: <strong>{{ currentValue }}</strong> <span class="text-gray-500" v-if="currentUser">({{ currentUserNickname }})</span></p>
       </transition>
-      <span class="progress inline-block my-2 h-1 bg-blue-400" :style="{ animationDuration: `${timer / 1000}s` }" :key="edited" v-if="edited > 1 && countdown === 0 && !end"></span>
+      <span class="progress inline-block my-2 h-1 bg-blue-400" :style="{ animationDuration: `${timer / 1000}s` }" :key="edited" v-if="edited > 0 && !end && countdown === 0"></span>
       <transition name="zoom-out" mode="out-in">
-        <div class="timer my-4 text-2xl text-pink-600 font-bold" :key="countdown" v-if="(timeout && countdown > 0) || end">
+        <div class="timer my-4 text-2xl text-pink-600 font-bold" :key="countdown" v-if="countdown > 0 || end">
           {{ countdownMessage }}
         </div>
       </transition>
@@ -34,7 +34,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { Timestamp } from '@/plugins/firebase'
+// import { Timestamp } from '@/plugins/firebase'
 import MainButton from '@/components/MainButton'
 
 export default {
@@ -43,9 +43,7 @@ export default {
   },
   data: () => ({
     timeout: undefined,
-    interval: undefined,
-    end: false,
-    countdown: 0
+    interval: undefined
   }),
   computed: {
     ...mapGetters('liveAuction', {
@@ -54,7 +52,9 @@ export default {
       currentValue: 'currentValue',
       currentUser: 'currentUser',
       lastEdited: 'lastEdited',
-      edited: 'edited'
+      countdown: 'countdown',
+      edited: 'edited',
+      end: 'end'
     }),
     ...mapGetters('auth', { uid: 'uid', userById: 'userById' }),
     currentUserNickname: {
@@ -83,42 +83,50 @@ export default {
     }
   },
   watch: {
-    lastEdited: {
-      handler (lastEdited) {
-        if (!lastEdited) return
-        const now = Timestamp.now()
-        console.log(lastEdited, now)
-      },
-      immediate: true
+    countdown: {
+      handler (c) {
+        if (c < 4 || !isMyOffer) return
+        this.addPlayer({ uid: this.uid, player: this.currentPlayer, value: this.currentValue })
+      }
     }
   },
+  // watch: {
+  //   lastEdited: {
+  //     handler (lastEdited) {
+  //       if (!lastEdited) return
+  //       const now = Timestamp.now()
+  //       console.log(lastEdited, now)
+  //     },
+  //     immediate: true
+  //   }
+  // },
   methods: {
     ...mapActions('liveAuction', { offer: 'offer', stopAuction: 'stopAuction' }),
     ...mapActions('auth', { addPlayer: 'addPlayer' }),
     async handleOffer (amount) {
       await this.offer({ value: this.currentValue + amount, uid: this.uid, edited: (this.edited + 1) })
-    },
-    startTimer () {
-      this.interval = setInterval(() => {
-        if (this.countdown === 3) {
-          if (this.isMyOffer) {
-            this.addPlayer({ uid: this.uid, player: this.currentPlayer, value: this.currentValue })
-            this.stopAuction()
-          }
-          this.stopTimer()
-          this.end = true
-          return
-        }
-        this.countdown++
-      }, 1000)
-    },
-    stopTimer () {
-      if (this.interval) clearInterval(this.interval)
-      if (this.timeout) clearTimeout(this.timeout)
-      this.countdown = 0
-      this.timeout = undefined
-      this.interval = undefined
     }
+    // startTimer () {
+    //   this.interval = setInterval(() => {
+    //     if (this.countdown === 3) {
+    //       if (this.isMyOffer) {
+    //         this.addPlayer({ uid: this.uid, player: this.currentPlayer, value: this.currentValue })
+    //         this.stopAuction()
+    //       }
+    //       this.stopTimer()
+    //       this.end = true
+    //       return
+    //     }
+    //     this.countdown++
+    //   }, 1000)
+    // },
+    // stopTimer () {
+    //   if (this.interval) clearInterval(this.interval)
+    //   if (this.timeout) clearTimeout(this.timeout)
+    //   this.countdown = 0
+    //   this.timeout = undefined
+    //   this.interval = undefined
+    // }
   }
 }
 </script>
