@@ -92,6 +92,7 @@ export default {
         }
         const role = roles[this.role]
         const player = this.player.toUpperCase()
+
         return this.quot
           .filter((p) => p.__1 === role && (p.__2.includes(player) || p.__3.toUpperCase().includes(player.toUpperCase())))
       }

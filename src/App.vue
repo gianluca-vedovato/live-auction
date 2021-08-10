@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <Navigation />
     <div class="container py-6">
       <transition name="fade">
         <router-view />
@@ -12,12 +11,8 @@
 
 <script>
 import { mapActions } from 'vuex'
-import Navigation from '@/components/Navigation'
 
 export default {
-  components: {
-    Navigation
-  },
   methods: {
     ...mapActions('auth', { signout: 'signout' })
   }

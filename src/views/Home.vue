@@ -1,5 +1,6 @@
 <template>
   <div class="home" v-if="user">
+    <Navigation/>
     <h1 class="text-4xl text-blue-600 font-bold">Benvenuto, {{ user.nickname || user.uid }}</h1>
     <div v-if="!isLive && !startNewAuction" class="my-10">
       <div>Nessuna asta live al momento</div>
@@ -23,6 +24,7 @@ import { auth } from '@/plugins/firebase'
 import store from '@/store'
 import { mapGetters } from 'vuex'
 
+import Navigation from '@/components/Navigation'
 import MainButton from '@/components/MainButton'
 import NewAuction from '@/components/NewAuction'
 import LiveAuction from '@/components/LiveAuction'
@@ -31,7 +33,8 @@ export default {
   components: {
     MainButton,
     NewAuction,
-    LiveAuction
+    LiveAuction,
+    Navigation
   },
   data: () => ({
     startNewAuction: false

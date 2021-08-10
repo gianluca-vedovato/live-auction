@@ -23,13 +23,24 @@
           +10
         </MainButton>
       </div>
+      <div class="border-t border-gray-400 my-10 pt-6">
+        <form @submit="handleOffer(customOffer)" class="flex flex-col items-center">
+          <label for="custom-offer" class="text-blue-600 font-bold text-s">Offerta personalizzata</label>
+          <input type="number" :min="currentValue" v-model="customOffer">
+          <button type="submit" class="mt-4" v-if="customOffer">
+            <MainButton :status="isMyOffer || this.end || customOffer <= currentValue ? 'disabled' : 'active'">
+              Offri {{ customOffer }}
+            </MainButton>
+          </button>
+          <div class="mt-4 text-red-500" v-if="customOffer <= currentValue">La tua offerta è più bassa dell'offerta attuale</div>
+        </form>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-// import { Timestamp } from '@/plugins/firebase'
 import MainButton from '@/components/MainButton'
 
 export default {
@@ -38,7 +49,8 @@ export default {
   },
   data: () => ({
     timeout: undefined,
-    interval: undefined
+    interval: undefined,
+    customOffer: undefined
   }),
   computed: {
     ...mapGetters('liveAuction', {
@@ -85,43 +97,12 @@ export default {
       }
     }
   },
-  // watch: {
-  //   lastEdited: {
-  //     handler (lastEdited) {
-  //       if (!lastEdited) return
-  //       const now = Timestamp.now()
-  //       console.log(lastEdited, now)
-  //     },
-  //     immediate: true
-  //   }
-  // },
   methods: {
     ...mapActions('liveAuction', { offer: 'offer', stopAuction: 'stopAuction' }),
     ...mapActions('auth', { addPlayer: 'addPlayer' }),
     async handleOffer (amount) {
       await this.offer({ value: this.currentValue + amount, uid: this.uid, edited: (this.edited + 1) })
     }
-    // startTimer () {
-    //   this.interval = setInterval(() => {
-    //     if (this.countdown === 3) {
-    //       if (this.isMyOffer) {
-    //         this.addPlayer({ uid: this.uid, player: this.currentPlayer, value: this.currentValue })
-    //         this.stopAuction()
-    //       }
-    //       this.stopTimer()
-    //       this.end = true
-    //       return
-    //     }
-    //     this.countdown++
-    //   }, 1000)
-    // },
-    // stopTimer () {
-    //   if (this.interval) clearInterval(this.interval)
-    //   if (this.timeout) clearTimeout(this.timeout)
-    //   this.countdown = 0
-    //   this.timeout = undefined
-    //   this.interval = undefined
-    // }
   }
 }
 </script>

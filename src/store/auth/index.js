@@ -12,7 +12,8 @@ export default ({
   getters: {
     uid: (state) => state.metadata?.uid,
     user: (state) => state.user,
-    userById: state => id => state.allUsers?.find(u => u.uid === id).nickname
+    userById: state => id => state.allUsers?.find(u => u.uid === id).nickname,
+    allUsers: state => state.allUsers
   },
   mutations: {
     setMetadata (state, metadata) {
