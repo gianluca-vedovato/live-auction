@@ -79,7 +79,7 @@ exports.startTimer = functions.https.onCall(async (data) => {
     countdown: 3
   }, { merge: true })
 
-  while (snapshotData?.countdown === 0) {
+  while (snapshotData?.countdown !== 0) {
     const newSnapshot = await admin
       .firestore()
       .collection('liveAuction')
