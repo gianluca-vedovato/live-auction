@@ -107,7 +107,7 @@ exports.startTimer = functions.https.onCall(async (data) => {
   current = await getSnapshot()
 
   if (current?.currentValue !== data.currentValue) return false
-  await ref.set({
+  return ref.set({
     countdown: 0,
     end: true
   }, { merge: true })
