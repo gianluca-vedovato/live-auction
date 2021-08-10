@@ -1,5 +1,6 @@
 import { database } from '@/plugins/firebase'
 import { firestoreAction } from 'vuexfire'
+import * as firebase from 'firebase'
 
 export default ({
   namespaced: true,
@@ -30,8 +31,16 @@ export default ({
         .get()
 
       // no space found
+      admin.database().ref('/messages').push({
+        text: sanitizedMessage,
+        author: { uid, name, picture, email },
+      })
       if (!snapshot.docs[0]) return
       commit('setId', snapshot.docs[0].id)
+      await firebase.functions().httpsCallable('startTimer', {
+        edited: snapshot.docs[0].edited,
+        currentValue: snapshot.docs[0].currentValue
+      })
       return bindFirestoreRef('auction', snapshot.docs[0].ref, { wait: true })
     }),
     stopAuction: ({ state }) => {
