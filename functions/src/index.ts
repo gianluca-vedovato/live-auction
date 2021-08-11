@@ -91,6 +91,7 @@ exports.startTimer = functions
 
     await countdown(3)
 
+    await timer(600)
     if (changed) return false
     await ref.set({
       countdown: 4,
