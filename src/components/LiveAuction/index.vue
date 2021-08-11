@@ -50,7 +50,8 @@ export default {
   data: () => ({
     timeout: undefined,
     interval: undefined,
-    customOffer: undefined
+    customOffer: undefined,
+    timer: 7500
   }),
   computed: {
     ...mapGetters('liveAuction', {
@@ -78,16 +79,16 @@ export default {
       get () {
         return this.end ? `Aggiudicato a ${this.currentUserNickname} a ${this.currentValue}` : this.countdown
       }
-    },
-    timer: {
-      get () {
-        return this.edited === 1
-          ? 6000
-          : this.edited < 5
-            ? 4500
-            : 2500
-      }
     }
+    // timer: {
+    //   get () {
+    //     return this.edited === 1
+    //       ? 6000
+    //       : this.edited < 5
+    //         ? 4500
+    //         : 2500
+    //   }
+    // }
   },
   watch: {
     countdown: {
