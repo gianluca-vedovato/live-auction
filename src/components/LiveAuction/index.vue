@@ -24,7 +24,7 @@
         </MainButton>
       </div>
       <div class="border-t border-gray-400 my-10 pt-6">
-        <form @submit.prevent="handleOffer(parseInt(customOffer))" class="flex flex-col items-center">
+        <form @submit.prevent="handleOffer(parseInt(customOffer), 'custom')" class="flex flex-col items-center">
           <label for="custom-offer" class="text-blue-600 font-bold text-s">Offerta personalizzata</label>
           <input type="number" :min="currentValue" v-model="customOffer">
           <button type="submit" class="mt-4" v-if="customOffer">
@@ -101,8 +101,11 @@ export default {
   methods: {
     ...mapActions('liveAuction', { offer: 'offer', stopAuction: 'stopAuction' }),
     ...mapActions('auth', { addPlayer: 'addPlayer' }),
-    async handleOffer (amount) {
-      await this.offer({ value: this.currentValue + amount, uid: this.uid, edited: (this.edited + 1) })
+    async handleOffer (amount, type = 'default') {
+      const value = type === 'default'
+        ? this.currentValue + amount
+        : amount
+      await this.offer({ value, uid: this.uid, edited: (this.edited + 1) })
     }
   }
 }
